@@ -557,28 +557,29 @@ void listarTurmaDiscentes() {
 		return;
 	}
 		
-
 	char linhaTurma[MAX];
 	char linhaDiscente[MAX];
 
 	Discente discente;
 	Turma turma;
-
+	int i = 0;
 	while(fgets(linhaTurma, MAX, arqTurmas) != NULL) {
-		sscanf(linhaTurma, "%d|%[^|]|%[^|]|%d|%.f|%d", &turma.num, turma.cpf, turma.codigo, &turma.ano, 
+		sscanf(linhaTurma, "%d|%[^|]|%[^|]|%d|%f|%d", &turma.num, turma.cpf, turma.codigo, &turma.ano, 
 													&turma.nota, &turma.horasParticipacao);
 		printf("\n\tTurma: %d\n", turma.num);
 		
-		while(fgets(linhaDiscente, MAX, arqDiscentes) != NULL) {
+		fgets(linhaDiscente, MAX, arqDiscentes);
+		do {
 			sscanf(linhaDiscente, "%[^|]|%[^|]|%d", discente.nome, discente.cpf, &discente.idade);    
-			printf("%s", &discente.nome);
-			if (turma.cpf == discente.cpf){
-				printf("\nNome %s | CPF: %s | Nota: %.2f", discente.nome, discente.cpf, turma.nota);
+			if (strstr(discente.cpf, turma.cpf) != NULL){
+				printf("\n* Nome %s | CPF: %s | Nota: %f", discente.nome, discente.cpf, turma.nota);
+				i++;	
 			} 
+	
+		} while(fgets(linhaDiscente, MAX, arqDiscentes) != NULL);
 		}
-	}
 
-
+printf("\n%d", i);
 	fclose(arqDiscentes);
 	fclose(arqTurmas);
 
