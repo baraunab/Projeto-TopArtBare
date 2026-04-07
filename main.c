@@ -33,36 +33,32 @@ typedef struct {
 	int horasParticipacao;
 } Turma;
 
-// PROTOTIPAÇÃO
-
-// INTERFACES
 void menu();
 void opDefault();
 void menuOpcoes();
-
-// CADASTRO EM ARQUIVOS
-
 void cadastrarDiscente();
 void cadastrarCurso();
 void cadastrarTurma();
 
-// AUXILIARES
 int contarLinhas(char *arquivo);
-// CRUD
 void listarDiscentes();
-void editarDiscente();
+void editarDiscente(int escolha);
 void excluirDiscente();
 
-// RELATORIOS
+void listarTurmas();
+void editarTurma(int escolha);
+void excluirTurma(int escolha);
+
+void listarCursos();
+void editarCurso(int escolha);
+void excluirCurso(int escolha);
+
+
 void pesquisarDiscente(char *info);
 void listarTurmaDiscentes();
 void listarTurmaDiscenteCurso();
-void listarTurmas();
 void listarTurmaCodigo(int escolha);
 void listarTurmaMedia();
-/****************|
-  |* MENU INICIAL *|
-  |****************/
 
 void menu(){
 	int op;
@@ -132,7 +128,6 @@ void menu(){
 		case 2: // Cursos
 			printf("\n\t\t===== TopArtBaré - Cursos =====\n");
 			menuOpcoes();
-			printf("\n\nEscolha: ");
 			scanf("%d", &op);
 			getchar();
 
@@ -141,6 +136,41 @@ void menu(){
 				case 1: 
 					cadastrarCurso();
 					break;
+
+				case 2: 
+					printf("\n\t\t=== TopArtBaré - Editar Curso ===\n");
+					printf("\n\tEscolha o registro para excluir pelo número correspondente\n\n");
+
+					listarCursos();
+
+					printf("\n\nEscolha: ");
+					scanf("%d", &escolha);
+					getchar();
+
+					editarCurso(escolha);
+					excluirCurso(escolha);
+					printf("\n\tExclusão realizada.\nVoltar\n>");
+					getchar();
+					menu();
+					break;
+
+				case 3: 
+					printf("\n\t\t=== TopArtBaré - Excluir Discente ===\n");
+					printf("\n\tEscolha o registro para excluir pelo número correspondente\n\n");
+
+					listarCursos();
+
+					printf("\n\nEscolha: ");
+					scanf("%d", &escolha);
+					getchar();
+
+					excluirCurso(escolha);
+					printf("\n\tExclusão realizada.\nVoltar\n>");
+					getchar();
+					menu();
+					break;
+
+
 
 				default:
 					opDefault();
@@ -152,7 +182,6 @@ void menu(){
 
 			printf("\n\t\t===== TopArtBaré - Turmas =====\n");
 			menuOpcoes();
-			printf("\n\nEscolha: ");
 			scanf("%d", &op);
 			getchar();
 
@@ -160,9 +189,39 @@ void menu(){
 				case 1:
 					cadastrarTurma();
 					break;
+				case 2:
+					printf("\n\t\t=== TopArtBaré - Editar Turma ===\n");
+					printf("\n\tEscolha o registro para editar pelo número correspondente\n\n");
+
+					listarTurmaDiscentes();
+
+					printf("\n\nEscolha: ");
+					scanf("%d", &escolha);
+
+					editarTurma(escolha);
+					excluirTurma(escolha);
+					menu();
+					break;
+				case 3:
+					printf("\n\t\t=== TopArtBaré - Excluir Turma ===\n");
+					printf("\n\tEscolha o registro para excluir pelo número correspondente\n\n");
+
+					listarTurmas();
+
+					printf("\n\nEscolha: ");
+					scanf("%d", &escolha);
+					getchar();
+
+					excluirTurma(escolha);
+					printf("\n\tExclusão realizada.\nVoltar\n>");
+					getchar();
+					menu();
+					break;
+
+
+
 
 			}
-
 
 			break; //fim case 3
 
@@ -278,14 +337,9 @@ void menuOpcoes(){
 	printf("\n\t1 - Cadastrar");
 	printf("\n\t2 - Editar");
 	printf("\n\t3 - Excluir");
-	printf("\n\t4 - Voltar");
+	printf("\n\t0 - Voltar");
 	printf("\n\nEscolha: ");
 }
-
-
-/****************************|
-  |* 1 - CADASTRO DE DISCENTE *|
-  |****************************/
 
 void cadastrarDiscente() {
 	FILE *f = fopen("./arquivos/discentes.txt", "a");
@@ -376,7 +430,45 @@ void listarDiscentes() {
 
 	fclose(f);
 }
+void listarCursos() {
+	char *arquivo = "./arquivos/cursos.txt";
 
+	int linhas = contarLinhas(arquivo);
+	if (linhas <= 0) return;
+
+	FILE *f = fopen(arquivo, "r");
+	if (f == NULL) {
+		printf("Erro - listarCursos: abertura de arquivo");
+		return;
+	}
+
+	char registro[MAX];
+	Curso curso[linhas];
+	memset(curso, 0, sizeof(curso));
+
+	for (int i = 0; i < linhas; i++) {
+		fgets(registro, sizeof(registro), f);
+
+		sscanf(registro, "%[^|]|%[^|]|%d|%d|%d",
+			curso[i].nome,
+			curso[i].codigo,
+			&curso[i].horas,
+			&curso[i].nVagas,
+			&curso[i].nParticipantes
+		);
+
+		printf("%d. Nome: %s | Codigo: %s | Horas: %d | Vagas: %d | Participantes: %d\n",
+			i+1,
+			curso[i].nome,
+			curso[i].codigo,
+			curso[i].horas,
+			curso[i].nVagas,
+			curso[i].nParticipantes
+		);
+	}
+
+	fclose(f);
+}
 void editarDiscente(int escolha) {
 
 	char *arquivo = "./arquivos/discentes.txt";
@@ -457,6 +549,202 @@ void editarDiscente(int escolha) {
 	fclose(f);
 
 }
+
+void editarTurma (int escolha) {
+	
+	char *arquivo = "./arquivos/turmas.txt";
+
+	FILE *f = fopen(arquivo, "r+");
+	if (f == NULL) {
+		printf("Erro - editarTurma: abertura de arquivo");
+	}
+
+	int linhas = contarLinhas(arquivo);
+	char registro[MAX];
+
+	printf("%d", escolha);
+	Turma turma[linhas];
+	memset(turma, 0, sizeof(turma));
+
+	for (int i = 0; i < linhas; i++) {
+		fgets(registro, sizeof(registro), f);
+
+		sscanf(registro, "%d|%[^|]|%[^|]|%d|%f|%d",
+			&turma[i].num,
+			turma[i].cpf,
+			turma[i].codigo,
+			&turma[i].ano,
+			&turma[i].nota,
+			&turma[i].horasParticipacao
+		);
+
+		if (i+1 == escolha){
+
+			printf("\n\tEscolha a informação que deseja editar\n\n");
+
+			printf("\n1. Numero: %d", turma[i].num);
+			printf("\n2. CPF: %s", turma[i].cpf);
+			printf("\n3. Codigo: %s", turma[i].codigo);
+			printf("\n4. Ano: %d", turma[i].ano);
+			printf("\n5. Nota: %.2f", turma[i].nota);
+			printf("\n6. Horas de participacao: %d\n", turma[i].horasParticipacao);
+
+			printf("\n\nEscolha: ");
+			scanf("%d", &escolha);
+
+			getchar();
+
+			switch(escolha){
+				case 1:
+					printf("\n\nEditar numero: ");
+					char temp1[MAX];
+					fgets(temp1, MAX, stdin);
+					turma[i].num = atoi(temp1);
+
+					printf("\nAlterado com sucesso!\n");
+
+					fseek(f, 0, SEEK_END);
+					fprintf(f, "%d|%s|%s|%d|%f|%d\n",
+						turma[i].num,
+						turma[i].cpf,
+						turma[i].codigo,
+						turma[i].ano,
+						turma[i].nota,
+						turma[i].horasParticipacao
+					);
+					break;
+
+				case 2:
+					printf("\n\nEditar CPF: ");
+					fgets(turma[i].cpf, MAX, stdin);
+					turma[i].cpf[strcspn(turma[i].cpf, "\n")] = '\0';
+
+					printf("\nAlterado com sucesso!\n");
+
+					fseek(f, 0, SEEK_END);
+					fprintf(f, "%d|%s|%s|%d|%f|%d\n",
+						turma[i].num,
+						turma[i].cpf,
+						turma[i].codigo,
+						turma[i].ano,
+						turma[i].nota,
+						turma[i].horasParticipacao
+					);
+					break;
+
+				case 3:
+					printf("\n\nEditar codigo: ");
+					fgets(turma[i].codigo, MAX, stdin);
+					turma[i].codigo[strcspn(turma[i].codigo, "\n")] = '\0';
+
+					printf("\nAlterado com sucesso!\n");
+
+					fseek(f, 0, SEEK_END);
+					fprintf(f, "%d|%s|%s|%d|%f|%d\n",
+						turma[i].num,
+						turma[i].cpf,
+						turma[i].codigo,
+						turma[i].ano,
+						turma[i].nota,
+						turma[i].horasParticipacao
+					);
+					break;
+
+				case 4:
+					printf("\n\nEditar ano: ");
+					char temp2[MAX];
+					fgets(temp2, MAX, stdin);
+					turma[i].ano = atoi(temp2);
+
+					printf("\nAlterado com sucesso!\n");
+
+					fseek(f, 0, SEEK_END);
+					fprintf(f, "%d|%s|%s|%d|%f|%d\n",
+						turma[i].num,
+						turma[i].cpf,
+						turma[i].codigo,
+						turma[i].ano,
+						turma[i].nota,
+						turma[i].horasParticipacao
+					);
+					break;
+
+				case 5:
+					printf("\n\nEditar nota: ");
+					char temp3[MAX];
+					fgets(temp3, MAX, stdin);
+					turma[i].nota = atof(temp3);
+
+					printf("\nAlterado com sucesso!\n");
+
+					fseek(f, 0, SEEK_END);
+					fprintf(f, "%d|%s|%s|%d|%f|%d\n",
+						turma[i].num,
+						turma[i].cpf,
+						turma[i].codigo,
+						turma[i].ano,
+						turma[i].nota,
+						turma[i].horasParticipacao
+					);
+					break;
+
+				case 6:
+					printf("\n\nEditar horas de participacao: ");
+					char temp4[MAX];
+					fgets(temp4, MAX, stdin);
+					turma[i].horasParticipacao = atoi(temp4);
+
+					printf("\nAlterado com sucesso!\n");
+
+					fseek(f, 0, SEEK_END);
+					fprintf(f, "%d|%s|%s|%d|%f|%d\n",
+						turma[i].num,
+						turma[i].cpf,
+						turma[i].codigo,
+						turma[i].ano,
+						turma[i].nota,
+						turma[i].horasParticipacao
+					);
+					break;
+
+				default:
+					opDefault();
+			}
+		}
+	}
+
+	fclose(f);
+
+}
+
+void excluirTurma(int linha) {
+	char *arquivo = "./arquivos/turmas.txt";
+	char *temp = "./arquivos/temp.txt";
+
+	int linhas = contarLinhas(arquivo);
+	char registro[1024];
+
+	FILE *turma = fopen(arquivo, "r");
+	FILE *temporario = fopen(temp, "w");
+
+	if (turma == NULL || temporario == NULL) {
+		printf("ERRO - excluirTurma: erro ao abrir um dos arquivos");
+	}
+
+	for(int i = 0; i < linhas; i++) {
+		fgets(registro, sizeof(registro), turma);
+
+		if (i != linha-1) {
+			fputs(registro, temporario);
+		}
+	}
+
+	fclose(turma);
+	fclose(temporario);
+
+	remove(arquivo);
+	rename(temp, arquivo);
+}
 void excluirDiscente(int linha) {
 	char *arquivo = "./arquivos/discentes.txt";
 	char *temp = "./arquivos/temp.txt";
@@ -525,6 +813,176 @@ void cadastrarCurso() {
 	fclose(f);
 
 }
+
+void editarCurso(int escolha) {
+
+	char *arquivo = "./arquivos/cursos.txt";
+
+	FILE *f = fopen(arquivo, "r+");
+	if (f == NULL) {
+		printf("Erro - editarCurso: abertura de arquivo");
+	}
+
+	int linhas = contarLinhas(arquivo);
+	char registro[MAX];
+
+	printf("%d", escolha);
+	Curso curso[linhas];
+	memset(curso, 0, sizeof(curso));
+
+	for (int i = 0; i < linhas; i++) {
+		fgets(registro, sizeof(registro), f);
+
+		sscanf(registro, "%[^|]|%[^|]|%d|%d|%d",
+			curso[i].nome,
+			curso[i].codigo,
+			&curso[i].horas,
+			&curso[i].nVagas,
+			&curso[i].nParticipantes
+		);
+
+		if (i+1 == escolha){
+
+			printf("\n\tEscolha a informação que deseja editar\n\n");
+
+			printf("\n1. Nome: %s", curso[i].nome);
+			printf("\n2. Codigo: %s", curso[i].codigo);
+			printf("\n3. Horas: %d", curso[i].horas);
+			printf("\n4. Numero de vagas: %d", curso[i].nVagas);
+			printf("\n5. Numero de participantes: %d\n", curso[i].nParticipantes);
+
+			printf("\n\nEscolha: ");
+			scanf("%d", &escolha);
+
+			getchar();
+
+			switch(escolha){
+				case 1:
+					printf("\n\nEditar nome: ");
+					fgets(curso[i].nome, MAX, stdin);
+					curso[i].nome[strcspn(curso[i].nome, "\n")] = '\0';
+
+					printf("\nAlterado com sucesso!\n");
+
+					fseek(f, 0, SEEK_END);
+					fprintf(f, "%s|%s|%d|%d|%d\n",
+						curso[i].nome,
+						curso[i].codigo,
+						curso[i].horas,
+						curso[i].nVagas,
+						curso[i].nParticipantes
+					);
+					break;
+
+				case 2:
+					printf("\n\nEditar codigo: ");
+					fgets(curso[i].codigo, MAX, stdin);
+					curso[i].codigo[strcspn(curso[i].codigo, "\n")] = '\0';
+
+					printf("\nAlterado com sucesso!\n");
+
+					fseek(f, 0, SEEK_END);
+					fprintf(f, "%s|%s|%d|%d|%d\n",
+						curso[i].nome,
+						curso[i].codigo,
+						curso[i].horas,
+						curso[i].nVagas,
+						curso[i].nParticipantes
+					);
+					break;
+
+				case 3:
+					printf("\n\nEditar horas: ");
+					char temp1[MAX];
+					fgets(temp1, MAX, stdin);
+					curso[i].horas = atoi(temp1);
+
+					printf("\nAlterado com sucesso!\n");
+
+					fseek(f, 0, SEEK_END);
+					fprintf(f, "%s|%s|%d|%d|%d\n",
+						curso[i].nome,
+						curso[i].codigo,
+						curso[i].horas,
+						curso[i].nVagas,
+						curso[i].nParticipantes
+					);
+					break;
+
+				case 4:
+					printf("\n\nEditar numero de vagas: ");
+					char temp2[MAX];
+					fgets(temp2, MAX, stdin);
+					curso[i].nVagas = atoi(temp2);
+
+					printf("\nAlterado com sucesso!\n");
+
+					fseek(f, 0, SEEK_END);
+					fprintf(f, "%s|%s|%d|%d|%d\n",
+						curso[i].nome,
+						curso[i].codigo,
+						curso[i].horas,
+						curso[i].nVagas,
+						curso[i].nParticipantes
+					);
+					break;
+
+				case 5:
+					printf("\n\nEditar numero de participantes: ");
+					char temp3[MAX];
+					fgets(temp3, MAX, stdin);
+					curso[i].nParticipantes = atoi(temp3);
+
+					printf("\nAlterado com sucesso!\n");
+
+					fseek(f, 0, SEEK_END);
+					fprintf(f, "%s|%s|%d|%d|%d\n",
+						curso[i].nome,
+						curso[i].codigo,
+						curso[i].horas,
+						curso[i].nVagas,
+						curso[i].nParticipantes
+					);
+					break;
+
+				default:
+					opDefault();
+			}
+		}
+	}
+
+	fclose(f);
+}
+
+void excluirCurso(int linha) {
+	char *arquivo = "./arquivos/cursos.txt";
+	char *temp = "./arquivos/temp.txt";
+
+	int linhas = contarLinhas(arquivo);
+	char registro[1024];
+
+	FILE *curso = fopen(arquivo, "r");
+	FILE *temporario = fopen(temp, "w");
+
+	if (curso == NULL || temporario == NULL) {
+		printf("ERRO - excluirCurso: erro ao abrir um dos arquivos");
+	}
+
+	for(int i = 0; i < linhas; i++) {
+		fgets(registro, sizeof(registro), curso);
+
+		if (i != linha-1) {
+			fputs(registro, temporario);
+		}
+	}
+
+	fclose(curso);
+	fclose(temporario);
+
+	remove(arquivo);
+	rename(temp, arquivo);
+}
+
 
 void cadastrarTurma() {
 	FILE *f = fopen("./arquivos/turmas.txt", "a");
