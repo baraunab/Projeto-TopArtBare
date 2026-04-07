@@ -167,7 +167,7 @@ void menu(){
 					break;
 
 				case 3: 
-					printf("\n\t\t=== TopArtBaré - Excluir Discente ===\n");
+					printf("\n\t\t=== TopArtBaré - Excluir Curso ===\n");
 					printf("\n\tEscolha o registro para excluir pelo número correspondente\n\n");
 
 					listarCursos();
