@@ -56,15 +56,18 @@ void excluirDiscente();
 // RELATORIOS
 void pesquisarDiscente(char *info);
 void listarTurmaDiscentes();
-
-	/****************|
-	|* MENU INICIAL *|
-	|****************/
+void listarTurmaDiscenteCurso();
+void listarTurmas();
+void listarTurmaCodigo(int escolha);
+void listarTurmaMedia();
+/****************|
+  |* MENU INICIAL *|
+  |****************/
 
 void menu(){
 	int op;
 	int escolha = 0;
-	
+
 	printf("\n\t\t===== Sistema TopArtBaré =====\n");
 	printf("\n\t1 - Discentes");
 	printf("\n\t2 - Cursos");
@@ -88,22 +91,22 @@ void menu(){
 				case 2:
 					printf("\n\t\t=== TopArtBaré - Editar Discente ===\n");
 					printf("\n\tEscolha o registro para editar pelo número correspondente\n\n");
-	
+
 					listarDiscentes();
 
 					printf("\n\nEscolha: ");
 					scanf("%d", &escolha);
-					
+
 					editarDiscente(escolha);
 					excluirDiscente(escolha);
-					
+
 					menu();
 					break;
 
 				case 3:
 					printf("\n\t\t=== TopArtBaré - Excluir Discente ===\n");
 					printf("\n\tEscolha o registro para excluir pelo número correspondente\n\n");
-	
+
 					listarDiscentes();
 
 					printf("\n\nEscolha: ");
@@ -115,7 +118,7 @@ void menu(){
 					getchar();
 					menu();
 					break;
-				
+
 				case 0:
 					menu();
 
@@ -125,7 +128,7 @@ void menu(){
 
 
 			break; // fim case 1
-				   
+
 		case 2: // Cursos
 			printf("\n\t\t===== TopArtBaré - Cursos =====\n");
 			menuOpcoes();
@@ -186,7 +189,12 @@ void menu(){
 
 					menu();
 					break;
-				
+
+				case 2:
+					printf("\n\t\t===== TopArtBaré - Listagem dos Cursos =====\n\n");
+
+					break;
+
 				case 3:
 					printf("\n\t\t===== TopArtBaré - Pesquisa de Discentes =====\n\n");
 					char info[MAX];
@@ -199,10 +207,46 @@ void menu(){
 					menu();
 
 					break;
-				
+
 				case 4:
+					printf("\n\t\t===== TopArtBaré - Listagem de Turmas e Discentes =====\n");
 					listarTurmaDiscentes();
+
+					printf("\n\nVoltar\n>");
+					getchar();
+					menu();
 					break;
+
+				case 5:
+					printf("\n\t\t===== TopArtBaré - Listagem de Turmas, Discentes e Cursos =====\n");
+					listarTurmaDiscenteCurso();
+					printf("\n\nVoltar\n>");
+					getchar();
+					menu();
+					break;
+
+				case 6: 
+					printf("\n\t\t===== TopArtBaré - Listagem de Turmas por número =====\n\n");
+					printf("\tEscolha o número de uma das turmas para listar\n");
+					listarTurmas();
+					printf("\n\nEscolha: ");
+					scanf("%d", &escolha);
+					getchar();
+					listarTurmaCodigo(escolha);
+					printf("\n\nVoltar\n>");
+					getchar();
+					menu();
+					break;
+
+				case 7:
+					printf("\n\t\t===== TopArtBaré - Listagem de Turmas e Média de notas =====\n\n");
+					listarTurmaMedia();
+					printf("\n\nVoltar\n>");
+					getchar();
+					menu();
+					break;
+
+
 				case 0:
 					menu();
 					break;
@@ -211,11 +255,11 @@ void menu(){
 			}
 
 			break; //fim case 4
-		
+
 		case 0: // Sair
 			printf("\n\nSaindo...\n\n");
 			break;
-		
+
 		default:
 			opDefault();
 			//fim default
@@ -239,9 +283,9 @@ void menuOpcoes(){
 }
 
 
-	/****************************|
-	|* 1 - CADASTRO DE DISCENTE *|
-	|****************************/
+/****************************|
+  |* 1 - CADASTRO DE DISCENTE *|
+  |****************************/
 
 void cadastrarDiscente() {
 	FILE *f = fopen("./arquivos/discentes.txt", "a");
@@ -252,7 +296,7 @@ void cadastrarDiscente() {
 		printf("Erro- cadastrarDiscentes: abertura de arquivo");
 		return;
 	}
-	
+
 	Discente discente = {0};
 
 	printf("\n\t\t===== TopArtBaré - Cadastrar discente =====\n");
@@ -271,22 +315,22 @@ void cadastrarDiscente() {
 	fgets(temp, MAX, stdin);
 	// passa char para int
 	discente.idade = atoi(temp);
-	
+
 	// armazena os dados no arquivo
 	fprintf(f, "%s|%s|%d\n", discente.nome, discente.cpf, discente.idade);
-	
+
 	fclose(f);
 
 	printf("\n\tCadastro concluido!\n>");
 	getchar();
-	
+
 	// retorna pro menu inicial
 	menu();
 }
 
 int contarLinhas(char *arquivo){
 	FILE *f = fopen(arquivo, "r");
-	
+
 	if (f == NULL) {
 		printf("Erro - contarLinhas: abertura de arquivo");
 		return 0;
@@ -294,7 +338,7 @@ int contarLinhas(char *arquivo){
 
 	char c;
 	int linhas = 0;
-	
+
 	// verifica ocorrencia de '\n' para contar linhas
 	while (!feof(f)){
 		// percorre por caracteres individualmente
@@ -309,35 +353,35 @@ int contarLinhas(char *arquivo){
 }
 
 void listarDiscentes() {
-    char *arquivo = "./arquivos/discentes.txt";
-    
-    int linhas = contarLinhas(arquivo);
-    if (linhas <= 0) return;
+	char *arquivo = "./arquivos/discentes.txt";
 
-    FILE *f = fopen(arquivo, "r");
-    if (f == NULL) {
-        printf("Erro - listarDiscentes: abertura de arquivo");
-        return;
-    }
+	int linhas = contarLinhas(arquivo);
+	if (linhas <= 0) return;
 
-    char registro[MAX];
-    Discente discente[linhas];
-    memset(discente, 0, sizeof(discente));
+	FILE *f = fopen(arquivo, "r");
+	if (f == NULL) {
+		printf("Erro - listarDiscentes: abertura de arquivo");
+		return;
+	}
 
-    for (int i = 0; i < linhas; i++) {
-        fgets(registro, sizeof(registro), f);
+	char registro[MAX];
+	Discente discente[linhas];
+	memset(discente, 0, sizeof(discente));
+
+	for (int i = 0; i < linhas; i++) {
+		fgets(registro, sizeof(registro), f);
 		sscanf(registro, "%[^|]|%[^|]|%d", discente[i].nome, discente[i].cpf, &discente[i].idade);    
 		printf("%d. Nome: %s | CPF: %s | Idade: %d\n", i+1, discente[i].nome, discente[i].cpf, discente[i].idade);
-    }
+	}
 
-    fclose(f);
+	fclose(f);
 }
 
 void editarDiscente(int escolha) {
 
 	char *arquivo = "./arquivos/discentes.txt";
 
-    FILE *f = fopen(arquivo, "r+");
+	FILE *f = fopen(arquivo, "r+");
 	if (f == NULL) {
 		printf("Erro - editarDiscente: abertura de arquivo");
 	}
@@ -347,16 +391,16 @@ void editarDiscente(int escolha) {
 
 	printf("%d", escolha);
 	Discente discente[linhas];
-    memset(discente, 0, sizeof(discente));
+	memset(discente, 0, sizeof(discente));
 
 	for (int i = 0; i < linhas; i++) {
-			fgets(registro, sizeof(registro), f);
-			sscanf(registro, "%[^|]|%[^|]|%d", discente[i].nome, discente[i].cpf, &discente[i].idade);    
+		fgets(registro, sizeof(registro), f);
+		sscanf(registro, "%[^|]|%[^|]|%d", discente[i].nome, discente[i].cpf, &discente[i].idade);    
 
 		if (i+1 == escolha){
 			printf("\n\tEscolha a informação que deseja editar\n\n");
 			printf("\n1. Nome: %s \n2. CPF: %s \n3. Idade: %d\n", discente[i].nome, discente[i].cpf, discente[i].idade);
-			
+
 			printf("\n\nEscolha: ");
 			scanf("%d", &escolha);
 
@@ -369,10 +413,10 @@ void editarDiscente(int escolha) {
 					fgets(discente[i].nome, MAX, stdin);
 					// adiciona '\0' para garantir o final da string
 					discente[i].nome[strcspn(discente[i].nome, "\n")] = '\0';
-					
+
 					printf("\n\nNome alterado com sucesso!!");
 					printf("\nNome: %s | CPF: %s | Idade: %d\n", discente[i].nome, discente[i].cpf, discente[i].idade);
-					
+
 					fseek(f, 0, SEEK_END);
 					fprintf(f, "%s|%s|%d\n", discente[i].nome, discente[i].cpf, discente[i].idade);
 					break;
@@ -381,7 +425,7 @@ void editarDiscente(int escolha) {
 					printf("\n\nEditar CPF: ");
 					fgets(discente[i].cpf, MAX, stdin);
 					discente[i].cpf[strcspn(discente[i].cpf, "\n")] = '\0'; 
-						
+
 					printf("\n\nCPF alterado com sucesso!!");
 					printf("\nNome: %s | CPF: %s | Idade: %d\n", discente[i].nome, discente[i].cpf, discente[i].idade);
 					fseek(f, 0, SEEK_END);
@@ -396,7 +440,7 @@ void editarDiscente(int escolha) {
 					fgets(temp, MAX, stdin);
 					// passa char para int
 					discente[i].idade = atoi(temp);
-		
+
 					printf("\n\nIdade alterada com sucesso!!");
 					printf("\nNome: %s | CPF: %s | Idade: %d\n", discente[i].nome, discente[i].cpf, discente[i].idade);
 					fseek(f, 0, SEEK_END);
@@ -416,7 +460,7 @@ void editarDiscente(int escolha) {
 void excluirDiscente(int linha) {
 	char *arquivo = "./arquivos/discentes.txt";
 	char *temp = "./arquivos/temp.txt";
-	
+
 	int linhas = contarLinhas(arquivo);
 	char registro[1024];
 
@@ -432,15 +476,15 @@ void excluirDiscente(int linha) {
 		if (i != linha-1) {
 			fputs(registro, temporario);
 		}
-		
+
 	}
 
 	fclose(discente);
 	fclose(temporario);
-	
+
 	remove(arquivo);
 	rename(temp, arquivo);
-	
+
 }
 
 void cadastrarCurso() {
@@ -477,7 +521,7 @@ void cadastrarCurso() {
 
 	fprintf(f, "%s|%s|%d|%d|%d\n", 
 			curso.nome, curso.codigo, curso.horas, curso.nVagas, curso.nParticipantes);
-	
+
 	fclose(f);
 
 }
@@ -494,7 +538,7 @@ void cadastrarTurma() {
 
 	printf("\n=== CADASTRAR TURMA ===\n");
 	getchar();
-	
+
 	printf("Numero: ");
 	fgets(temp, MAX, stdin);
 	turma.num = atoi(temp);
@@ -506,11 +550,11 @@ void cadastrarTurma() {
 	printf("Codigo: ");
 	fgets(turma.codigo, MAX, stdin);
 	turma.codigo[strcspn(turma.codigo, "\n")] = '\0';
-	
+
 	printf("Ano: ");
 	fgets(temp, MAX, stdin);
 	turma.ano = atoi(temp);
-	
+
 	printf("Nota: ");
 	fgets(temp, MAX, stdin);
 	turma.nota = atof(temp);
@@ -532,7 +576,7 @@ void pesquisarDiscente(char *info) {
 		return;
 	}
 
-    info[strcspn(info, "\n")] = '\0';
+	info[strcspn(info, "\n")] = '\0';
 	char linha[MAX];
 	Discente discente;
 
@@ -549,42 +593,271 @@ void pesquisarDiscente(char *info) {
 }
 
 void listarTurmaDiscentes() {
-	FILE *arqDiscentes = fopen("./arquivos/discentes.txt", "r");
-	FILE *arqTurmas = fopen("./arquivos/turmas.txt", "r");
-	
+	char *nomeDisc = "./arquivos/discentes.txt";
+	char *nomeTur = "./arquivos/turmas.txt";
+
+	int qtdDisc =  contarLinhas(nomeDisc);
+	int qtdTur = contarLinhas(nomeTur);
+
+	FILE *arqDiscentes = fopen(nomeDisc, "r");
+	FILE *arqTurmas = fopen(nomeTur, "r");
+
+
 	if (arqDiscentes == NULL || arqTurmas == NULL) {
 		printf("Erro - listarTurmaDiscentes: abertura de um dos arquivos");
 		return;
 	}
-		
+
 	char linhaTurma[MAX];
 	char linhaDiscente[MAX];
 
-	Discente discente;
-	Turma turma;
-	int i = 0;
-	while(fgets(linhaTurma, MAX, arqTurmas) != NULL) {
-		sscanf(linhaTurma, "%d|%[^|]|%[^|]|%d|%f|%d", &turma.num, turma.cpf, turma.codigo, &turma.ano, 
-													&turma.nota, &turma.horasParticipacao);
-		printf("\n\tTurma: %d\n", turma.num);
-		
-		fgets(linhaDiscente, MAX, arqDiscentes);
-		do {
-			sscanf(linhaDiscente, "%[^|]|%[^|]|%d", discente.nome, discente.cpf, &discente.idade);    
-			if (strstr(discente.cpf, turma.cpf) != NULL){
-				printf("\n* Nome %s | CPF: %s | Nota: %f", discente.nome, discente.cpf, turma.nota);
-				i++;	
-			} 
-	
-		} while(fgets(linhaDiscente, MAX, arqDiscentes) != NULL);
-		}
+	Discente discente[qtdDisc];
+	Turma turma[qtdTur];
+	for (int i = 0; i < qtdDisc; i++) {
+		if (fgets(linhaDiscente, MAX, arqDiscentes) == NULL) break;
 
-printf("\n%d", i);
+		sscanf(linhaDiscente, "%[^|]|%[^|]|%d", discente[i].nome, discente[i].cpf, &discente[i].idade);
+	}
+
+	for (int j = 0; j < qtdTur; j++) {
+		if (fgets(linhaTurma, MAX, arqTurmas) == NULL) break;
+
+		sscanf(linhaTurma, "%d|%[^|]|%[^|]|%d|%f|%d", &turma[j].num, turma[j].cpf, turma[j].codigo, &turma[j].ano,
+				&turma[j].nota, &turma[j].horasParticipacao);
+	}
+
+
+	for(int i = 0; i < qtdDisc; i++) {	
+		for(int j = 0; j < qtdTur; j++){
+
+			if (strcmp(discente[i].cpf, turma[j].cpf) == 0) {
+				printf("\n* Turma: %d | Nome: %s | CPF: %s | Nota: %.2f", turma[j].num, discente[i].nome, 
+						discente[i].cpf, turma[j].nota);
+
+			}
+		}
+	}
+
 	fclose(arqDiscentes);
+	fclose(arqTurmas);
+}
+
+void listarTurmaDiscenteCurso(){
+	char *nomeDisc = "./arquivos/discentes.txt";
+	char *nomeTur = "./arquivos/turmas.txt";
+	char *nomeCur = "./arquivos/cursos.txt";
+
+	int qtdDisc =  contarLinhas(nomeDisc);
+	int qtdTur = contarLinhas(nomeTur);
+	int qtdCur = contarLinhas(nomeCur);
+
+	FILE *arqDiscentes = fopen(nomeDisc, "r");
+	FILE *arqTurmas = fopen(nomeTur, "r");
+	FILE *arqCursos = fopen(nomeCur, "r");
+
+	if (arqDiscentes == NULL || arqTurmas == NULL || arqCursos == NULL) {
+		printf("Erro - listarTurmaDiscenteCurso: abertura de um dos arquivos");
+		return;
+	}
+
+	char linhaTurma[MAX];
+	char linhaDiscente[MAX];
+	char linhaCurso[MAX];
+
+	Discente discente[qtdDisc];
+	Turma turma[qtdTur];
+	Curso curso[qtdCur];
+
+	for (int i = 0; i < qtdDisc; i++) {
+		if (fgets(linhaDiscente, MAX, arqDiscentes) == NULL) break;
+
+		sscanf(linhaDiscente, "%[^|]|%[^|]|%d", discente[i].nome, discente[i].cpf, &discente[i].idade);
+	}
+
+	for (int j = 0; j < qtdTur; j++) {
+		if (fgets(linhaTurma, MAX, arqTurmas) == NULL) break;
+
+		sscanf(linhaTurma, "%d|%[^|]|%[^|]|%d|%f|%d", &turma[j].num, turma[j].cpf, turma[j].codigo, &turma[j].ano,
+				&turma[j].nota, &turma[j].horasParticipacao);
+	}
+
+	for (int k = 0; k < qtdCur; k++) {
+		if (fgets(linhaCurso, MAX, arqCursos) == NULL) break;
+
+		sscanf(linhaCurso, "%[^|]|%[^|]|%d|%d|%d", curso[k].nome, curso[k].codigo, &curso[k].horas, &curso[k].nVagas, &curso[k].nParticipantes);
+	}
+
+	for(int i = 0; i < qtdDisc; i++) {	
+		for(int j = 0; j < qtdTur; j++){
+			for (int k = 0; k < qtdCur; k++){
+				if (strcmp(discente[i].cpf, turma[j].cpf) == 0 && strcmp(curso[k].codigo, turma[j].codigo) == 0) {
+					printf("\n* Turma: %d | Nome: %s | CPF: %s | Nota: %.2f \n\t-> Curso: %s | Codigo: %s\n", 
+							turma[j].num, discente[i].nome, 
+							discente[i].cpf, turma[j].nota, curso[k].nome, curso[k].codigo);
+				}
+
+			}
+		}
+	}
+
+	fclose(arqDiscentes);
+	fclose(arqTurmas);
+	fclose(arqCursos);
+
+}
+
+void listarTurmas() {
+	char *nomeTur = "./arquivos/turmas.txt";
+
+	int qtdTur = contarLinhas(nomeTur);
+
+	FILE *arqTurmas = fopen(nomeTur, "r");
+
+	if (arqTurmas == NULL) {
+		printf("Erro - listarTurmaDiscentes: abertura de um dos arquivos");
+		return;
+	}
+
+	char linhaTurma[MAX];
+	Turma turma[qtdTur];
+	int totalTurmas = 0;
+
+	for (int j = 0; j < qtdTur; j++) {
+		if (fgets(linhaTurma, MAX, arqTurmas) == NULL) break;
+
+		sscanf(linhaTurma, "%d|%[^|]|%[^|]|%d|%f|%d", &turma[j].num, turma[j].cpf, turma[j].codigo, &turma[j].ano,
+				&turma[j].nota, &turma[j].horasParticipacao);
+
+	}
+
+	for (int j = 0; j < qtdTur; j++) {
+		int i;
+		for (i = 0; i < j; i++) {
+			if (turma[i].num == turma[j].num) {
+				break; 
+			}
+		}
+		if (i == j) {
+			printf("\n* Turma %d", turma[i].num );
+		}
+	}	
 	fclose(arqTurmas);
 
 }
 
+void listarTurmaCodigo(int escolha) {
+	char *nomeDisc = "./arquivos/discentes.txt";
+	char *nomeTur = "./arquivos/turmas.txt";
+
+	int qtdDisc =  contarLinhas(nomeDisc);
+	int qtdTur = contarLinhas(nomeTur);
+	FILE *arqDiscentes = fopen(nomeDisc, "r");
+	FILE *arqTurmas = fopen(nomeTur, "r");
+
+
+	if (arqDiscentes == NULL || arqTurmas == NULL) {
+		printf("Erro - listarTurmaCodigo: abertura de um dos arquivos");
+		return;
+	}
+
+	char linhaTurma[MAX];
+	char linhaDiscente[MAX];
+
+	Discente discente[qtdDisc];
+	Turma turma[qtdTur];
+	
+	for (int i = 0; i < qtdDisc; i++) {
+		if (fgets(linhaDiscente, MAX, arqDiscentes) == NULL) break;
+
+		sscanf(linhaDiscente, "%[^|]|%[^|]|%d", discente[i].nome, discente[i].cpf, &discente[i].idade);
+	}
+	
+	int encontrado = 0;
+
+	for (int j = 0; j < qtdTur; j++) {
+		if (fgets(linhaTurma, MAX, arqTurmas) == NULL) break;
+
+		sscanf(linhaTurma, "%d|%[^|]|%[^|]|%d|%f|%d", &turma[j].num, turma[j].cpf, turma[j].codigo, &turma[j].ano,
+				&turma[j].nota, &turma[j].horasParticipacao);
+		if (escolha == turma[j].num) { 
+			encontrado++;	
+		} 
+	}
+
+	if (encontrado == 0) {
+		printf("\n\t* Turma não encontrada!!");
+	}
+	
+	encontrado = 0;
+	
+	for (int i = 0; i < qtdDisc; i++){
+		for (int j = 0; j < qtdTur; j++) {
+			if (escolha == turma[j].num && strcmp(turma[j].cpf, discente[i].cpf) == 0) {
+				if (encontrado == 0) {
+					printf("\n\tTurma %d", turma[j].num);
+					encontrado++;
+				}
+				printf("\n* Nome: %s | CPF: %s | Nota: %.2f", discente[i].nome, discente[i].cpf, turma[j].nota);
+
+			}
+
+		}
+	}
+	fclose(arqDiscentes);
+	fclose(arqTurmas);
+}
+
+void listarTurmaMedia(){
+	char *nomeTur = "./arquivos/turmas.txt";
+
+	int qtdTur = contarLinhas(nomeTur);
+
+	FILE *arqTurmas = fopen(nomeTur, "r");
+
+	if (arqTurmas == NULL) {
+		printf("Erro - listarTurmaDiscentes: abertura de um dos arquivos");
+		return;
+	}
+
+	char linhaTurma[MAX];
+	Turma turma[qtdTur];
+	int totalTurmas = 0;
+
+	for (int j = 0; j < qtdTur; j++) {
+		if (fgets(linhaTurma, MAX, arqTurmas) == NULL) break;
+
+		sscanf(linhaTurma, "%d|%[^|]|%[^|]|%d|%f|%d", &turma[j].num, turma[j].cpf, turma[j].codigo, &turma[j].ano,
+				&turma[j].nota, &turma[j].horasParticipacao);
+
+	}
+
+	for (int j = 0; j < qtdTur; j++) {
+		int i;
+		for (i = 0; i < j; i++) {
+			if (turma[i].num == turma[j].num) {
+				break; 
+			}
+		}
+		if (i == j) {
+			totalTurmas++;
+		}
+	}
+
+	float acm = 0;
+	int totalDisc = 0;
+	for (int i = 0; i < totalTurmas; i++) {
+		for (int j = 0; j < qtdTur; j++) {
+			if (turma[j].num == turma[i].num) {
+				acm = acm + turma[j].nota;
+				totalDisc++;
+			}
+		}
+			printf("\n\tTurma %d - Média: %.2f", turma[i].num, acm/totalDisc);
+	}
+	
+	fclose(arqTurmas);
+
+}
 
 void main () {
 	setlocale(LC_ALL, "Portuguese");
