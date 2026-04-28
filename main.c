@@ -1106,12 +1106,13 @@ void listarTurmaDiscentes() {
 				&turma[j].nota, &turma[j].horasParticipacao);
 	}
 
-
+	int k = 0;
 	for(int i = 0; i < qtdDisc; i++) {	
 		for(int j = 0; j < qtdTur; j++){
 
 			if (strcmp(discente[i].cpf, turma[j].cpf) == 0) {
-				printf("\n\t%d. Turma: %d | Nome: %s | CPF: %s | Nota: %.2f", i+1, turma[j].num, discente[i].nome, 
+				k++;
+				printf("\n\t%d. Turma: %d | Nome: %s | CPF: %s | Nota: %.2f", k, turma[j].num, discente[i].nome, 
 						discente[i].cpf, turma[j].nota);
 
 			}
