@@ -129,7 +129,6 @@ void menu(){
 
 				case 0:
 					menu();
-					break;
 
 				default:
 					opDefault();
@@ -184,8 +183,6 @@ void menu(){
 					break;
 				case 0:
 					menu();
-					break;
-
 				default:
 					opDefault();
 			}
@@ -395,18 +392,16 @@ void cadastrarDiscente() {
 	FILE *f = fopen("./arquivos/discentes.txt", "a");
 	// variavel temporaria para receber numero em char para passar para int
 	char temp[MAX];
-	
-	// confirma abertura de arquivo
+
 	if (f == NULL){
 		printf("Erro- cadastrarDiscentes: abertura de arquivo");
 		return;
 	}
-	// inicia estrutura discente zerada
+
 	Discente discente = {0};
 
 	printf("\n\t\t===== TopArtBaré - Cadastrar discente =====\n");
-	getchar(); // previne que o nome seja o /n anterior
-			   
+	getchar();
 	printf("Nome: ");
 	fgets(discente.nome, MAX, stdin);
 	// adiciona '\0' para garantir o final da string
