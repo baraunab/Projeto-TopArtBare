@@ -1,0 +1,5 @@
+Tecnologia em Produção Publicitária|TPP|3000|40|20
+Licenciatura em Matemática|LMAT|5000|40|33
+Ciências da Computação|CC|3000|40|25
+Tecnologia em Análise e Desenvolvimento de Sistemas|TADS|3000|35|25
+Licenciatura em Química|LQUI|3000|40|35
