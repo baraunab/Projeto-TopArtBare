@@ -477,21 +477,21 @@ void editarDiscente(int escolha) {
 	Discente discente[linhas];
 	memset(discente, 0, sizeof(discente));
 
-	for (int i = 0; i < linhas; i++) {
+	for (int i = 1; i < linhas; i++) {
 		fgets(registro, sizeof(registro), f);
 		sscanf(registro, "%[^|]|%[^|]|%d", discente[i].nome, discente[i].cpf, &discente[i].idade);    
 
-		if (i+1 == escolha){
-			printf("\n\tEscolha a informação que deseja editar\n\n");
+		if (i == escolha){
+			printf("\n\tEscolha a informação que deseja editar - %d %d\n\n",i, escolha);
 			printf("\n1. Nome: %s \n2. CPF: %s \n3. Idade: %d\n", discente[i].nome, discente[i].cpf, discente[i].idade);
 
+			int opcao = 0;
 			printf("\n\nEscolha: ");
-			scanf("%d", &escolha);
+			scanf("%d", &opcao);
 
 			getchar();
 
-
-			switch(escolha){
+			switch(opcao){
 				case 1:
 					printf("\n\nEditar nome: ");
 					fgets(discente[i].nome, MAX, stdin);
@@ -681,15 +681,15 @@ void editarTurma (int escolha) {
 	Turma turma[linhas];
 	memset(turma, 0, sizeof(turma));
 
-	for (int i = 0; i < linhas; i++) {
+	for (int i = 1; i < linhas; i++) {
 		fgets(registro, sizeof(registro), f);
 
 		sscanf(registro, "%d|%[^|]|%[^|]|%d|%f|%d", &turma[i].num, turma[i].cpf, turma[i].codigo, &turma[i].ano,
 							&turma[i].nota, &turma[i].horasParticipacao);
 
-		if (i+1 == escolha){
+		if (i == escolha){
 
-			printf("\n\tEscolha a informação que deseja editar\n\n");
+			printf("\n\tEscolha a informação que deseja editar - %d\n\n", i);
 
 			printf("\n1. Numero: %d", turma[i].num);
 			printf("\n2. CPF: %s", turma[i].cpf);
@@ -697,13 +697,13 @@ void editarTurma (int escolha) {
 			printf("\n4. Ano: %d", turma[i].ano);
 			printf("\n5. Nota: %.2f", turma[i].nota);
 			printf("\n6. Horas de participacao: %d\n", turma[i].horasParticipacao);
-
+			int opcao = 0;
 			printf("\n\nEscolha: ");
-			scanf("%d", &escolha);
+			scanf("%d", &opcao);
 
 			getchar();
 
-			switch(escolha){
+			switch(opcao){
 				case 1:
 					printf("\n\nEditar numero: ");
 					char temp1[MAX];
@@ -727,7 +727,8 @@ void editarTurma (int escolha) {
 					fseek(f, 0, SEEK_END);
 					fprintf(f, "%d|%s|%s|%d|%f|%d\n", turma[i].num, turma[i].cpf, turma[i].codigo,
 						turma[i].ano, turma[i].nota, turma[i].horasParticipacao);
-				break;
+				
+					break;
 
 				case 3:
 					printf("\n\nEditar codigo: ");
@@ -739,6 +740,7 @@ void editarTurma (int escolha) {
 					fseek(f, 0, SEEK_END);
 					fprintf(f, "%d|%s|%s|%d|%f|%d\n", turma[i].num, turma[i].cpf, turma[i].codigo,
 						turma[i].ano, turma[i].nota, turma[i].horasParticipacao);
+			
 					break;
 
 				case 4:
@@ -752,6 +754,7 @@ void editarTurma (int escolha) {
 					fseek(f, 0, SEEK_END);
 					fprintf(f, "%d|%s|%s|%d|%f|%d\n", turma[i].num, turma[i].cpf, turma[i].codigo,
 						turma[i].ano, turma[i].nota, turma[i].horasParticipacao);
+				
 					break;
 
 				case 5:
@@ -765,6 +768,7 @@ void editarTurma (int escolha) {
 					fseek(f, 0, SEEK_END);
 					fprintf(f, "%d|%s|%s|%d|%f|%d\n", turma[i].num, turma[i].cpf, turma[i].codigo,
 						turma[i].ano, turma[i].nota, turma[i].horasParticipacao);
+					
 					break;
 
 				case 6:
@@ -778,6 +782,7 @@ void editarTurma (int escolha) {
 					fseek(f, 0, SEEK_END);
 					fprintf(f, "%d|%s|%s|%d|%f|%d\n", turma[i].num, turma[i].cpf, turma[i].codigo,
 						turma[i].ano, turma[i].nota, turma[i].horasParticipacao);
+					
 					break;
 
 				default:
@@ -916,13 +921,13 @@ void editarCurso(int escolha) {
 	Curso curso[linhas];
 	memset(curso, 0, sizeof(curso));
 
-	for (int i = 0; i < linhas; i++) {
+	for (int i = 1; i < linhas; i++) {
 		fgets(registro, sizeof(registro), f);
 
 		sscanf(registro, "%[^|]|%[^|]|%d|%d|%d", curso[i].nome, curso[i].codigo, &curso[i].horas,
 			&curso[i].nVagas, &curso[i].nParticipantes);
 
-		if (i+1 == escolha){
+		if (i == escolha){
 
 			printf("\n\tEscolha a informação que deseja editar\n\n");
 
@@ -932,12 +937,12 @@ void editarCurso(int escolha) {
 			printf("\n4. Numero de vagas: %d", curso[i].nVagas);
 			printf("\n5. Numero de participantes: %d\n", curso[i].nParticipantes);
 
+			int opcao = 0;
 			printf("\n\nEscolha: ");
-			scanf("%d", &escolha);
-
+			scanf("%d", &opcao);
 			getchar();
 
-			switch(escolha){
+			switch(opcao){
 				case 1:
 					printf("\n\nEditar nome: ");
 					fgets(curso[i].nome, MAX, stdin);
