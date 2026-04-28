@@ -49,7 +49,7 @@ int contarLinhas(char *arquivo); // CONTA O TOTAL DE LINHAS DE UM ARQUIVO
 void cadastrarDiscente();
 void listarDiscentes();
 void editarDiscente(int escolha);
-void excluirDiscente();
+void excluirDiscente(int escolha);
 
 // CRUD CURSOS
 void cadastrarCurso();
