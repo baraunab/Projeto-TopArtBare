@@ -49,7 +49,7 @@ int contarLinhas(char *arquivo); // CONTA O TOTAL DE LINHAS DE UM ARQUIVO
 void cadastrarDiscente();
 void listarDiscentes();
 void editarDiscente(int escolha);
-void excluirDiscente();
+void excluirDiscente(int escolha);
 
 // CRUD CURSOS
 void cadastrarCurso();
@@ -130,6 +130,7 @@ void menu(){
 				case 0:
 					menu();
 
+					break;
 				default:
 					opDefault();
 			}
@@ -183,6 +184,7 @@ void menu(){
 					break;
 				case 0:
 					menu();
+					break;
 				default:
 					opDefault();
 			}
@@ -480,13 +482,14 @@ void editarDiscente(int escolha) {
 			printf("\n\tEscolha a informação que deseja editar\n\n");
 			printf("\n1. Nome: %s \n2. CPF: %s \n3. Idade: %d\n", discente[i].nome, discente[i].cpf, discente[i].idade);
 
+			int op = 0;
 			printf("\n\nEscolha: ");
-			scanf("%d", &escolha);
+			scanf("%d", &op);
 
 			getchar();
 
 
-			switch(escolha){
+			switch(op){
 				case 1:
 					printf("\n\nEditar nome: ");
 					fgets(discente[i].nome, MAX, stdin);
@@ -692,13 +695,13 @@ void editarTurma (int escolha) {
 			printf("\n4. Ano: %d", turma[i].ano);
 			printf("\n5. Nota: %.2f", turma[i].nota);
 			printf("\n6. Horas de participacao: %d\n", turma[i].horasParticipacao);
-
+			int op = 0;
 			printf("\n\nEscolha: ");
-			scanf("%d", &escolha);
+			scanf("%d", &op);
 
 			getchar();
 
-			switch(escolha){
+			switch(op){
 				case 1:
 					printf("\n\nEditar numero: ");
 					char temp1[MAX];

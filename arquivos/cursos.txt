@@ -1,0 +1,3 @@
+Ciências da Computação|CC|4000|30|20
+Tecnologia em Produção Publicitária|TPP|3600|40|25
+Tecnologia em Analise e Desenvolvimento de Sistemas|TADS|3600|40|25
